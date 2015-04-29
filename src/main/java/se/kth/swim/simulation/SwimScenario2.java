@@ -24,9 +24,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 import org.javatuples.Pair;
-
 import se.kth.swim.AggregatorComp;
 import se.kth.swim.HostComp;
 import se.sics.kompics.network.Address;
@@ -53,8 +51,10 @@ import se.sics.p2ptoolbox.util.network.impl.BasicNatedAddress;
 
 /**
  * @author Alex Ormenisan <aaor@sics.se>
+ * @author Md. Rizvi Hasan <mrhasan@kth.se>
+ * 
  */
-public class SwimScenario {
+public class SwimScenario2 {
 
     private static long seed;
     private static InetAddress localHost;
@@ -74,13 +74,13 @@ public class SwimScenario {
         Set<Pair<Integer, Integer>> deadLinks;
 
         deadLinks = new HashSet<Pair<Integer, Integer>>();
-        deadLinks.add(Pair.with(8, 18));
-        deadLinks.add(Pair.with(18, 8));
+        deadLinks.add(Pair.with(10, 18));
+        deadLinks.add(Pair.with(18, 10));
         deadLinksSets.put(1, deadLinks);
         
-        deadLinks.add(Pair.with(8, 10));
-        deadLinks.add(Pair.with(10, 8));
-        deadLinksSets.put(2, deadLinks);
+//        deadLinks.add(Pair.with(8, 10));
+//        deadLinks.add(Pair.with(10, 8));
+//        deadLinksSets.put(2, deadLinks);
 
 //        deadLinks = new HashSet<Pair<Integer, Integer>>();
 //        deadLinks.add(Pair.with(10, 12));
@@ -96,13 +96,13 @@ public class SwimScenario {
         Set<Integer> disconnectedNodes;
 
         disconnectedNodes = new HashSet<Integer>();
-        disconnectedNodes.add(10);
+        disconnectedNodes.add(18);
         disconnectedNodesSets.put(1, disconnectedNodes);
 
-        disconnectedNodes = new HashSet<Integer>();
-        disconnectedNodes.add(10);
-        disconnectedNodes.add(12);
-        disconnectedNodesSets.put(2, disconnectedNodes);
+//        disconnectedNodes = new HashSet<Integer>();
+//        disconnectedNodes.add(10);
+//        disconnectedNodes.add(18);
+//        disconnectedNodesSets.put(2, disconnectedNodes);
     }
 
     static Operation1<StartAggregatorCmd, Integer> startAggregatorOp = new Operation1<StartAggregatorCmd, Integer>() {
@@ -246,7 +246,7 @@ public class SwimScenario {
     //check se.sics.p2ptoolbox.simulator.dsl.distribution for more distributions
     //you can implement your own - by extending Distribution
     public static SimulationScenario simpleBoot(final long seed) {
-        SwimScenario.seed = seed;
+        SwimScenario2.seed = seed;
         SimulationScenario scen = new SimulationScenario() {
             {
                 StochasticProcess startAggregator = new StochasticProcess() {
@@ -270,16 +270,26 @@ public class SwimScenario {
 //                        }
 //                        raise(_nodeCount, startNodeOp, new GenIntSequentialDistribution(evenNodeList));
                         
-                        raise(4, startNodeOp, new GenIntSequentialDistribution(new Integer[]{18,16,10,8}));
+                        raise(3, startNodeOp, new GenIntSequentialDistribution(new Integer[]{18,16,10}));
+                        //raise(100, startNodeOp, new BasicIntSequentialDistribution(10));
+                        
+                    }
+                };
+                
+                StochasticProcess joinPeers = new StochasticProcess() {
+                    {
+                        eventInterArrivalTime(constant(1000));                          
+                        raise(2, startNodeOp, new GenIntSequentialDistribution(new Integer[]{24,28}));
                         //raise(100, startNodeOp, new BasicIntSequentialDistribution(10));
                         
                     }
                 };
 
+
                 StochasticProcess killPeers = new StochasticProcess() {
                     {
                         eventInterArrivalTime(constant(1000));
-                        raise(1, killNodeOp, new ConstantDistribution(Integer.class, 10));
+                        raise(1, killNodeOp, new ConstantDistribution(Integer.class, 18));
                     }
                 };
 
@@ -306,11 +316,13 @@ public class SwimScenario {
 
                 startAggregator.start();
                 startPeers.startAfterTerminationOf(1000, startAggregator);
-//                killPeers.startAfterTerminationOf(10000, startPeers);
-//                deadLinks1.startAfterTerminationOf(0,startPeers);
-//                disconnectedNodes1.startAfterTerminationOf(10000, startPeers);
-                fetchSimulationResult.startAfterTerminationOf(0, startPeers);
-                terminateAfterTerminationOf(30000, fetchSimulationResult);
+                deadLinks1.startAfterTerminationOf(0,startPeers);
+                joinPeers.startAfterStartOf(1000, deadLinks1);
+                killPeers.startAfterTerminationOf(10000, joinPeers);
+//                killPeers.startAfterTerminationOf(1000, deadLinks1);
+//                disconnectedNodes1.startAfterTerminationOf(1000, startPeers);
+                fetchSimulationResult.startAfterTerminationOf(500, startPeers);
+                terminateAfterTerminationOf(300000, fetchSimulationResult);
 
             }
         };

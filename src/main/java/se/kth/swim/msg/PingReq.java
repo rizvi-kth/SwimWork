@@ -16,35 +16,30 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package se.kth.swim.msg.net;
 
-import se.kth.swim.msg.Ping;
-import se.sics.kompics.network.Header;
+package se.kth.swim.msg;
+
+import java.util.Set;
+
 import se.sics.p2ptoolbox.util.network.NatedAddress;
 
 /**
  * @author Alex Ormenisan <aaor@sics.se>
  */
-public class NetPing extends NetMsg<Ping> {
-
-    public NetPing(NatedAddress src, NatedAddress dst) {
-        super(src, dst, new Ping());
-    }
-
-    private NetPing(Header<NatedAddress> header, Ping content) {
-        super(header, content);
-    }
-    
-    // -- Riz
-    public NetPing(NatedAddress src, NatedAddress dst, Ping content) {
-        super(src, dst, content);
-    }	
-    // --
-    
-
-    @Override
-    public NetMsg copyMessage(Header<NatedAddress> newHeader) {
-        return new NetPing(newHeader, getContent());
-    }
-
+public class PingReq {
+	// -- Riz
+	private NatedAddress TestSubjectNode = null;
+	
+	public PingReq()
+	{}
+	
+	public PingReq(NatedAddress p_TestSubjectNode)
+	{
+		this.TestSubjectNode = p_TestSubjectNode;
+	}
+	
+	public NatedAddress GetTestSubjectNode(){
+		return TestSubjectNode;
+	}
+	// --
 }

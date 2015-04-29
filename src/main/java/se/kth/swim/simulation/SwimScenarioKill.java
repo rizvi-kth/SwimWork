@@ -54,7 +54,7 @@ import se.sics.p2ptoolbox.util.network.impl.BasicNatedAddress;
 /**
  * @author Alex Ormenisan <aaor@sics.se>
  */
-public class SwimScenario {
+public class SwimScenarioKill {
 
     private static long seed;
     private static InetAddress localHost;
@@ -214,6 +214,17 @@ public class SwimScenario {
         }
     };
 
+    static Operation1<ChangeNetworkModelCmd, Integer> reConnectedNodesNMOp = new Operation1<ChangeNetworkModelCmd, Integer>() {
+
+        @Override
+        public ChangeNetworkModelCmd generate(Integer setIndex) {
+            NetworkModel baseNetworkModel = new UniformRandomModel(50, 500);
+            //NetworkModel compositeNetworkModel = new DisconnectedNodesNetworkModel(setIndex, baseNetworkModel, disconnectedNodesSets.get(setIndex));
+            return new ChangeNetworkModelCmd(baseNetworkModel);
+        }
+    };
+
+    
     static Operation1<ChangeNetworkModelCmd, Integer> deadLinksNMOp = new Operation1<ChangeNetworkModelCmd, Integer>() {
 
         @Override
@@ -246,7 +257,7 @@ public class SwimScenario {
     //check se.sics.p2ptoolbox.simulator.dsl.distribution for more distributions
     //you can implement your own - by extending Distribution
     public static SimulationScenario simpleBoot(final long seed) {
-        SwimScenario.seed = seed;
+        SwimScenarioKill.seed = seed;
         SimulationScenario scen = new SimulationScenario() {
             {
                 StochasticProcess startAggregator = new StochasticProcess() {
@@ -275,6 +286,26 @@ public class SwimScenario {
                         
                     }
                 };
+                
+                StochasticProcess joinPeers = new StochasticProcess() {
+                    {
+                        eventInterArrivalTime(constant(1000));
+                        //raise(3, startNodeOp, new GenIntSequentialDistribution(new Integer[]{10, 13, 17}));
+                        
+//                        int _nodeCount = 10;
+//                        Integer[] evenNodeList = new Integer[_nodeCount];
+//                        int _node = 0;
+//                        for (int i = 0; i<_nodeCount; i++){                        	
+//                        	evenNodeList[i] = _node;
+//                        	_node+=2; // For even nodes
+//                        }
+//                        raise(_nodeCount, startNodeOp, new GenIntSequentialDistribution(evenNodeList));
+                        
+                        raise(2, startNodeOp, new GenIntSequentialDistribution(new Integer[]{24,28}));
+                        //raise(100, startNodeOp, new BasicIntSequentialDistribution(10));
+                        
+                    }
+                };
 
                 StochasticProcess killPeers = new StochasticProcess() {
                     {
@@ -293,7 +324,7 @@ public class SwimScenario {
                 StochasticProcess disconnectedNodes1 = new StochasticProcess() {
                     {
                         eventInterArrivalTime(constant(1000));
-                        raise(1, disconnectedNodesNMOp, new ConstantDistribution(Integer.class, 1));
+                        raise(1, disconnectedNodesNMOp, new ConstantDistribution(Integer.class, 10));
                     }
                 };
 
@@ -307,9 +338,15 @@ public class SwimScenario {
                 startAggregator.start();
                 startPeers.startAfterTerminationOf(1000, startAggregator);
 //                killPeers.startAfterTerminationOf(10000, startPeers);
+//                joinPeers.startAfterTerminationOf(10000, startPeers);
+                
+//                killPeers.startAfterTerminationOf(10000, startPeers);
 //                deadLinks1.startAfterTerminationOf(0,startPeers);
-//                disconnectedNodes1.startAfterTerminationOf(10000, startPeers);
+                disconnectedNodes1.startAfterTerminationOf(10000, startPeers);
+                
                 fetchSimulationResult.startAfterTerminationOf(0, startPeers);
+                
+                
                 terminateAfterTerminationOf(30000, fetchSimulationResult);
 
             }

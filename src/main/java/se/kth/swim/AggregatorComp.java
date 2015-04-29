@@ -18,8 +18,11 @@
  */
 package se.kth.swim;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import se.kth.swim.msg.net.NetStatus;
 import se.sics.kompics.ComponentDefinition;
 import se.sics.kompics.Handler;
@@ -72,10 +75,42 @@ public class AggregatorComp extends ComponentDefinition {
 
         @Override
         public void handle(NetStatus status) {
-            log.info("{} status from:{} pings:{}", 
-                    new Object[]{selfAddress.getId(), status.getHeader().getSource(), status.getContent().receivedPings});
+        	// -- Riz
+        	 
+        	//if(status.getHeader().getSource().getId()== 10)  // <<<--- To watch only node 10's convergence   
+        		log.info("{} status from:{} - Sent Pings:{} ,Received Pongs:{}, with vicinity of {} nodes: " + ProcessViciniTyList(status.getContent().vicinityNodeList) , 
+                      new Object[]{selfAddress.getId(),         			
+              					 status.getHeader().getSource(), 
+              					 status.getContent().sentPings, status.getContent().receivedPongs,
+              					 status.getContent().vicinityNodeList.size()}
+        				);
+//            log.info("{} status from:{} - Received Pings:{} ,Received Pongs:{}, with vicinity of nodes:" + ProcessViciniTyList(status.getContent().vicinityNodeList), 
+//                    new Object[]{selfAddress.getId(), 
+//            					 status.getHeader().getSource(), 
+//            					 status.getContent().receivedPings, status.getContent().receivedPongs}
+//            					 );
+            // --
         }
     };
+    
+    // -- Riz
+    public String ProcessViciniTyList(List<VicinityEntry> vList)
+    {
+    	String st = " ";    	
+    	for(VicinityEntry nd : vList){
+    		String stat = "";
+    		if (nd.nodeStatus == "SUSPECTED"){
+    			stat = "(S" + nd.waitingForPongCount + ")";
+    		}
+    		if (nd.nodeStatus == "DEAD"){
+    			stat = "(D" + nd.waitingForPongCount + ")";
+    		}
+    		st += nd.nodeAdress.getId() + stat + " ";
+    	}
+    	return st;
+    	    	
+    }
+    // -- 
 
     public static class AggregatorInit extends Init<AggregatorComp> {
 

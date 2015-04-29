@@ -42,8 +42,11 @@ public class SwimMain {
          * It can be the same seed or can be customized, eg: newSeed = a * oldSeed + b
          * When testing you code, you might want to run the scenario with different seeds.
          */
-        LauncherComp.scenario = SwimScenario.simpleBoot(1234L);
-        //
+        //LauncherComp.scenario = SwimScenario.simpleBoot(1234L);
+//        LauncherComp.scenario = SwimScenario2.simpleBoot(1234L);
+        //LauncherComp.scenario = SwimScenarioJoin.simpleBoot(1234L);
+        LauncherComp.scenario = SwimScenarioKill.simpleBoot(1234L); // Crashed with-in Kompics  
+        
         try {
             LauncherComp.simulatorClientAddress = new BasicNatedAddress(new BasicAddress(InetAddress.getByName("127.0.0.1"), 30000, -1));
         } catch (UnknownHostException ex) {

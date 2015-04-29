@@ -16,35 +16,48 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package se.kth.swim.msg.net;
 
-import se.kth.swim.msg.Ping;
-import se.sics.kompics.network.Header;
+package se.kth.swim.msg;
+
+import java.util.Set;
+import java.util.UUID;
+
 import se.sics.p2ptoolbox.util.network.NatedAddress;
 
 /**
  * @author Alex Ormenisan <aaor@sics.se>
  */
-public class NetPing extends NetMsg<Ping> {
+public class Pong {
+	    // -- Riz
+		private Set<NatedAddress> piggyBackedJoinedNodes = null;
+		private Set<NatedAddress> piggyBackedDeadNodes = null;
+		
+		//private UUID pongCheckTimeoutId ;
+		
+		public Pong()
+		{}
+		
+		public Pong(Set<NatedAddress> p_piggyBackedJoinedNodes,Set<NatedAddress> p_piggyBackedDeadNodes)
+		{
+			piggyBackedJoinedNodes= p_piggyBackedJoinedNodes;
+			piggyBackedDeadNodes= p_piggyBackedDeadNodes;
+			
+		}
+		
+		public Set<NatedAddress> getPiggyBackedJoinedNodes() {
+			return piggyBackedJoinedNodes;
+		}
 
-    public NetPing(NatedAddress src, NatedAddress dst) {
-        super(src, dst, new Ping());
-    }
+		public Set<NatedAddress> getPiggyBackedDeadNodes() {
+			return piggyBackedDeadNodes;
+		}
 
-    private NetPing(Header<NatedAddress> header, Ping content) {
-        super(header, content);
-    }
-    
-    // -- Riz
-    public NetPing(NatedAddress src, NatedAddress dst, Ping content) {
-        super(src, dst, content);
-    }	
-    // --
-    
+		
 
-    @Override
-    public NetMsg copyMessage(Header<NatedAddress> newHeader) {
-        return new NetPing(newHeader, getContent());
-    }
-
+		
+//		public UUID getPongCheckTimeoutId()
+//		{
+//			return pongCheckTimeoutId; 
+//		}
+		// --
 }

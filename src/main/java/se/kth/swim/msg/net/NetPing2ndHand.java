@@ -18,25 +18,25 @@
  */
 package se.kth.swim.msg.net;
 
-import se.kth.swim.msg.Ping;
+import se.kth.swim.msg.Ping2ndHand;
 import se.sics.kompics.network.Header;
 import se.sics.p2ptoolbox.util.network.NatedAddress;
 
 /**
  * @author Alex Ormenisan <aaor@sics.se>
  */
-public class NetPing extends NetMsg<Ping> {
+public class NetPing2ndHand extends NetMsg<Ping2ndHand> {
 
-    public NetPing(NatedAddress src, NatedAddress dst) {
-        super(src, dst, new Ping());
+    public NetPing2ndHand(NatedAddress src, NatedAddress dst) {
+        super(src, dst, new Ping2ndHand());
     }
 
-    private NetPing(Header<NatedAddress> header, Ping content) {
+    private NetPing2ndHand(Header<NatedAddress> header, Ping2ndHand content) {
         super(header, content);
     }
     
     // -- Riz
-    public NetPing(NatedAddress src, NatedAddress dst, Ping content) {
+    public NetPing2ndHand(NatedAddress src, NatedAddress dst, Ping2ndHand content) {
         super(src, dst, content);
     }	
     // --
@@ -44,7 +44,7 @@ public class NetPing extends NetMsg<Ping> {
 
     @Override
     public NetMsg copyMessage(Header<NatedAddress> newHeader) {
-        return new NetPing(newHeader, getContent());
+        return new NetPing2ndHand(newHeader, getContent());
     }
 
 }

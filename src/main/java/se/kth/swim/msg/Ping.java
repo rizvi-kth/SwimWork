@@ -19,8 +19,30 @@
 
 package se.kth.swim.msg;
 
+import java.util.Set;
+import java.util.UUID;
+
+import se.sics.p2ptoolbox.util.network.NatedAddress;
+
 /**
  * @author Alex Ormenisan <aaor@sics.se>
  */
 public class Ping {
+	// -- Riz
+	//private UUID pongCheckTimeoutId ;
+	
+	public Ping()
+	{}
+	
+//	public Ping(UUID p_pongCheckTimeoutId)
+//	{
+//		pongCheckTimeoutId=  p_pongCheckTimeoutId;
+//	}
+//	
+//	public UUID getPongCheckTimeoutId()
+//	{
+//		return pongCheckTimeoutId; 
+//	}
+
+	// --
 }

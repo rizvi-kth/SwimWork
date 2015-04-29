@@ -19,13 +19,25 @@
 
 package se.kth.swim.msg;
 
+import java.util.List;
+
+import se.kth.swim.VicinityEntry;
+import se.sics.p2ptoolbox.util.network.NatedAddress;
+
 /**
  * @author Alex Ormenisan <aaor@sics.se>
  */
 public class Status {
+	public int sentPings;
     public int receivedPings;
+    public int receivedPongs;
+    public List<VicinityEntry> vicinityNodeList;
     
-    public Status(int receivedPings) {
+    public Status(int sentPings,int receivedPings, int receivedPongs, List<VicinityEntry> vicinityNodeList ) {
+    	this.sentPings = sentPings;
         this.receivedPings = receivedPings;
+        this.receivedPongs = receivedPongs;
+        this.vicinityNodeList = vicinityNodeList;
+        
     }
 }
